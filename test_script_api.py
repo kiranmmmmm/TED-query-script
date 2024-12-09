@@ -1,5 +1,6 @@
 # importing packages
 import requests
+import json
 # import subprocess
 
 # running importing acc_nos from retrieve_id
@@ -18,5 +19,7 @@ for i in acc_nos:
     prot = response.json()
     myfamily[i] = prot
 
-print(myfamily)
+with open("test_family.json", "w") as outfile: 
+    json.dump(myfamily, outfile)
+
 
