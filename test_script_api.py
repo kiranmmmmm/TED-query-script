@@ -6,8 +6,9 @@ import json
 # running importing acc_nos from retrieve_id
 # subprocess.Popen(["python","retrieve_id.py"])
 from test_script_retrieve_id import acc_nos
- 
-print(acc_nos)
+
+# to confirm acc_nos functions correctly 
+#print(acc_nos)
 
 # creating myfamily to append all relevant protein data via API query using acc_nos generated from retrieve_id.py
 myfamily = {}
