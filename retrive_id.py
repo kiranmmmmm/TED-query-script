@@ -5,3 +5,6 @@ with open('uniprot_file.json') as j:
     json_data = json.load(j)
 
 # retrieve all values attributed to key = "secondaryAccessions"
+acc_nos = [result["secondaryAccessions"] for result in json_data["results"]]
+
+print(acc_nos)
