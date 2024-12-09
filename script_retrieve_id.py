@@ -6,5 +6,3 @@ with open('uniprotkb_test.json') as j:
 
 # retrieve all values attributed to key = "primaryAccession"
 acc_nos = [result["primaryAccession"] for result in json_data["results"]]
-
-print(acc_nos)
