@@ -4,7 +4,7 @@ import requests
 
 # running importing acc_nos from retrieve_id
 # subprocess.Popen(["python","retrieve_id.py"])
-from retrieve_id import acc_nos
+from test_script_retrieve_id import acc_nos
  
 print(acc_nos)
 
