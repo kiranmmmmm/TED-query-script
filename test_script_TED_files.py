@@ -31,4 +31,13 @@ if not os.path.exists(directory):
 print(ted_nos) """
 
 # compiling all TED id's for retrieving the id's in a list, and retrieving all the info into a json-style dictionary
-for 
+# looping through myfamily with acc_nos to retrieve TED id's
+from test_script_retrieve_id import acc_nos
+
+for accession in acc_nos:
+    for result in my_family[accession]["data"]:
+        ted_list.append(result["ted_id"])
+
+for ted_id in ted_list:
+    url = f'https://ted.cathdb.info//api/v1/files/{ted_id}'
+    response = requests.get(url)
