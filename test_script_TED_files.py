@@ -31,4 +31,4 @@ if not os.path.exists(directory):
 print(ted_nos) """
 
 # compiling all TED id's for retrieving the id's in a list, and retrieving all the info into a json-style dictionary
-
+for 
