@@ -7,6 +7,8 @@ import sys
 # from pathlib import Path
 # multithreading for quicker query running
 from concurrent.futures import ThreadPoolExecutor, as_completed
+# in-built delay to account for/reduce instance of API overload
+import time
 
 # retrieve myfamily
 from script_api import myfamily
@@ -19,6 +21,7 @@ with open('test_family.json') as j:
 # create required dictionaries and lists to populate with TED data
 ted_list = []
 data_dict = {}
+y = 0
 
 # directory = "D:/Scripts/data/test_ted"
 directory = input("Please state the address of an EXISTING root folder for writing in the pdb file database: ")
@@ -44,8 +47,25 @@ for accession in acc_nos:
     for result in myfamily[accession]["data"]:
         ted_list.append(result["ted_id"])
 
+# janky as fk method to pause all threads for 1 minute after 100 iterations
+""" a = 0
+b = 1
+c = 2
+d = 3
+e = 4
+f = 5
+g = 6
+h = 7
+i = 8
+j = 9
+k = 10
+l = 11
+m = 12
+n = 13
+o = 14 """
+
 # obtaining and saving the .pdb files of all files called from ted_id's and saving in stated directory
-with ThreadPoolExecutor(max_workers=50) as executor: 
+with ThreadPoolExecutor(max_workers=15) as executor: 
     finals = [executor.submit(obtain, f'https://ted.cathdb.info//api/v1/files/{ted_id}.pdb') for ted_id in ted_list]
 
     for final in as_completed(finals):
