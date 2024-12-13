@@ -45,7 +45,7 @@ for accession in tqdm(acc_nos):
         ted_list.append(result["ted_id"])
 
 # obtaining and saving the .pdb files of all files called from ted_id's and saving in stated directory
-with ThreadPoolExecutor(max_workers=10) as executor: 
+with ThreadPoolExecutor(max_workers=30) as executor: 
     finals = [executor.submit(obtain, f'https://ted.cathdb.info//api/v1/files/{ted_id}.pdb') for ted_id in ted_list]
 
     for final in tqdm(as_completed(finals), total=len(finals)):

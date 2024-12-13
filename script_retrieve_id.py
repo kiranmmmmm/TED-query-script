@@ -1,5 +1,6 @@
 # Import json file of desired protein information loaded from Uniprot, to extract Uniprot ids (accession number) into a list
 import json
+import sys
 
 #state custom file path for json with all protein data for desired database
 file = input("Please state the address of Uniprot-downloaded json file for accession ID extraction: ")
