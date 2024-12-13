@@ -40,12 +40,12 @@ def obtain(url):
 from script_retrieve_id import acc_nos
 
 # compiling all TED id's for retrieving the id's in a list 
-for accession in tqdm(acc_nos):
+for accession in acc_nos:
     for result in myfamily[accession]["data"]:
         ted_list.append(result["ted_id"])
 
 # obtaining and saving the .pdb files of all files called from ted_id's and saving in stated directory
-with ThreadPoolExecutor(max_workers=100) as executor: 
+with ThreadPoolExecutor(max_workers=50) as executor: 
     finals = [executor.submit(obtain, f'https://ted.cathdb.info//api/v1/files/{ted_id}.pdb') for ted_id in ted_list]
 
     for final in as_completed(finals):

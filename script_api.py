@@ -19,7 +19,7 @@ def fetch(url):
     return response.json()
 
 # iterating through list of accession numbers and appending to dictionary within multi-threading method
-with ThreadPoolExecutor(max_workers=100) as executor: 
+with ThreadPoolExecutor(max_workers=50) as executor: 
     fx = [executor.submit(fetch, f'https://ted.cathdb.info//api/v1/uniprot/summary/{i}') for i in acc_nos]
 
     for future in as_completed(fx):
