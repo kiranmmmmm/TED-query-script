@@ -2,7 +2,7 @@
 import requests
 import json
 # progress bar
-from tqdm import tqdm
+# from tqdm import tqdm
 # multithreading for quicker query running
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -19,10 +19,10 @@ def fetch(url):
     return response.json()
 
 # iterating through list of accession numbers and appending to dictionary within multi-threading method
-with ThreadPoolExecutor(max_workers=30) as executor: 
+with ThreadPoolExecutor(max_workers=100) as executor: 
     fx = [executor.submit(fetch, f'https://ted.cathdb.info//api/v1/uniprot/summary/{i}') for i in acc_nos]
 
-    for future in tqdm(as_completed(fx), total=len(fx)):
+    for future in as_completed(fx):
         prot = future.result()
         acc_no = acc_nos[fx.index(future)]
         myfamily[acc_no] = prot

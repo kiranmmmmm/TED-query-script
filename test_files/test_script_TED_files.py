@@ -4,7 +4,7 @@ import os
 import sys
 import itertools
 # progress bar
-from tqdm import tqdm
+from perc import Perc
 # retrieve myfamily
 # from test_script_api import myfamily
 
@@ -39,12 +39,12 @@ from pathlib import Path
 from test_script_retrieve_id import acc_nos
 
 # compiling all TED id's for retrieving the id's in a list 
-for accession in tqdm(acc_nos):
+for accession in Perc(acc_nos):
     for result in my_family[accession]["data"]:
         ted_list.append(result["ted_id"])
 
 # obtaining and saving the .pdb files of all files called from ted_id's and saving in stated directory
-for ted_id in tqdm(ted_list):
+for ted_id in Perc(ted_list):
     url = f'https://ted.cathdb.info//api/v1/files/{ted_id}.pdb'
     response = requests.get(url)
     # ensure the ted_id bring added to the url is legit
