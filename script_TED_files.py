@@ -37,7 +37,7 @@ from test_script_retrieve_id import acc_nos
 
 # compiling all TED id's for retrieving the id's in a list 
 for accession in acc_nos:
-    for result in my_family[accession]["data"]:
+    for result in myfamily[accession]["data"]:
         ted_list.append(result["ted_id"])
 
 # obtaining and saving the .pdb files of all files called from ted_id's and saving in stated directory
