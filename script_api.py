@@ -26,4 +26,3 @@ with ThreadPoolExecutor(max_workers=10) as executor:
         prot = future.result()
         acc_no = acc_nos[fx.index(future)]
         myfamily[acc_no] = prot
-        print("located " + acc_no)

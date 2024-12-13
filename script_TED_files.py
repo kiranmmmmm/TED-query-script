@@ -1,10 +1,10 @@
 import requests
-import json
 import os
 import sys
-import itertools
 # progress bar
 from tqdm import tqdm
+# import pathlib for reasier coding to save files from api
+# from pathlib import Path
 # multithreading for quicker query running
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -12,8 +12,9 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from script_api import myfamily
 
 # test version so I don't bother the API too much :)
-""" with open('test_family.json') as j:
-    my_family = json.load(j) """
+""" import json
+with open('test_family.json') as j:
+    myfamily = json.load(j) """
 
 # create required dictionaries and lists to populate with TED data
 ted_list = []
@@ -29,16 +30,11 @@ if not os.path.exists(directory):
     directory = os.getcwd() + "/ted_output"
     os.makedirs(directory)
 
-""" ted_nos = [result["ted_id"] for result in myfamily["results"]]
-print(ted_nos) """
-
 # defining function to fetch data from threadpool executor
-def fetch(url): 
-    response = requests.get(url) 
-    return response.json()
-
-# import pathlib for reasier coding to save files from api
-from pathlib import Path
+def obtain(url): 
+    response = requests.get(url)
+    response.raise_for_status()
+    return response.content
 
 # accessing acc_nos list to loop through myfamily with acc_nos to retrieve TED id's
 from script_retrieve_id import acc_nos
@@ -49,27 +45,16 @@ for accession in tqdm(acc_nos):
         ted_list.append(result["ted_id"])
 
 # obtaining and saving the .pdb files of all files called from ted_id's and saving in stated directory
-for ted_id in tqdm(ted_list):
-    url = f'https://ted.cathdb.info//api/v1/files/{ted_id}.pdb'
-    response = requests.get(url)
-    # ensure the ted_id being added to the url is legitimate
-    # print(ted_id)
-    # only running code if successful retrieval
-    if response.status_code == 200:
-      with open(directory + "/" + ted_id + ".pdb" , "wb") as f:
-          f.write(response.content)
-    else:
-        print("Query failed. Status code: " + str(response.status_code))
-    # urllib.request.urlretrieve(url, "filename.pdf")
-
 with ThreadPoolExecutor(max_workers=10) as executor: 
-    finals = [executor.submit(fetch, f'https://ted.cathdb.info//api/v1/files/{ted_id}.pdb') for ted_id in ted_list]
+    finals = [executor.submit(obtain, f'https://ted.cathdb.info//api/v1/files/{ted_id}.pdb') for ted_id in ted_list]
 
     for final in tqdm(as_completed(finals), total=len(finals)):
-        result = final.result()
-        index = ted_list[finals.index(final)]
-        print(index)
-        with open(directory + "/" + ted_id + ".pdb" , "wb") as f:
-          f.write(result.content)
+        try:
+            index = ted_list[finals.index(final)] 
+            file_path = directory + "/" + index + ".pdb"  
+            with open(file_path, "wb") as f:
+                f.write(final.result())
+        except requests.exceptions.RequestException as e: 
+            print(f"Request failed: {e}, variable accessed: {type(final.result())}")
 
 print("Finished!")
