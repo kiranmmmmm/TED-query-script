@@ -2,7 +2,7 @@ import requests
 import os
 import sys
 # progress bar
-# from tqdm import tqdm
+from tqdm import tqdm
 # import pathlib for reasier coding to save files from api
 # from pathlib import Path
 # multithreading for quicker query running
@@ -23,9 +23,7 @@ ted_list = []
 data_dict = {}
 y = 0
 
-# directory = "D:/Scripts/data/test_ted"
-directory = input("Please state the address of an EXISTING root folder for writing in the pdb file database: ")
-directory = os.path.abspath(directory)
+
 
 if not os.path.exists(directory):
     print("the address entered does not exist or is incorrectly formatted.")
@@ -40,7 +38,7 @@ def obtain(url):
     return response.content
 
 # accessing acc_nos list to loop through myfamily with acc_nos to retrieve TED id's
-from script_retrieve_id import acc_nos
+from script_retrieve_id import acc_nos, directory
 
 # compiling all TED id's for retrieving the id's in a list 
 for accession in acc_nos:
@@ -68,12 +66,13 @@ o = 14 """
 with ThreadPoolExecutor(max_workers=15) as executor: 
     finals = [executor.submit(obtain, f'https://ted.cathdb.info//api/v1/files/{ted_id}.pdb') for ted_id in ted_list]
 
-    for final in as_completed(finals):
+    for final in tqdm(as_completed(finals), total=len(finals)):
         try:
             index = ted_list[finals.index(final)] 
             file_path = directory + "/" + index + ".pdb"  
             with open(file_path, "wb") as f:
                 f.write(final.result())
+            time.sleep(6)
         except requests.exceptions.RequestException as e: 
             print(f"Request failed: {e}, variable accessed: {type(final.result())}")
 

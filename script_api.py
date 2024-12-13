@@ -34,6 +34,7 @@ o = 14 """
 # defining function to fetch data from threadpool executor
 def fetch(url): 
     response = requests.get(url) 
+    response.raise_for_status()
     return response.json()
 
 # iterating through list of accession numbers and appending to dictionary within multi-threading method
@@ -44,3 +45,5 @@ with ThreadPoolExecutor(max_workers=15) as executor:
         prot = future.result()
         acc_no = acc_nos[fx.index(future)]
         myfamily[acc_no] = prot
+        time.sleep(6)
+        
