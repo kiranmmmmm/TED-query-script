@@ -1,4 +1,5 @@
 import requests
+from requests.adapters import HTTPAdapter, Retry
 import os
 import sys
 # progress bar
@@ -21,29 +22,41 @@ with open('test_family.json') as j:
 # create required dictionaries and lists to populate with TED data
 ted_list = []
 data_dict = {}
-y = 0
 
-
+# accessing acc_nos list to loop through myfamily with acc_nos to retrieve TED id's
+from script_retrieve_id import acc_nos, directory
 
 if not os.path.exists(directory):
     print("the address entered does not exist or is incorrectly formatted.")
     print("creating new folder in current working directory")
     directory = os.getcwd() + "/ted_output"
+    print(directory)
     os.makedirs(directory)
+
+# creating session with way less max_retries so that 443 errors can be detected faster and passed quicker
+s = requests.Session()
+retries = Retry(total=2,
+                backoff_factor=30,
+                status_forcelist=[ 500, 502, 503, 504 ])
+
+s.mount("http://", HTTPAdapter(max_retries= retries))
 
 # defining function to fetch data from threadpool executor
 def obtain(url): 
-    response = requests.get(url)
+    response = s.get(url)
     response.raise_for_status()
     return response.content
 
-# accessing acc_nos list to loop through myfamily with acc_nos to retrieve TED id's
-from script_retrieve_id import acc_nos, directory
+proteins_without_TED_files = []
 
 # compiling all TED id's for retrieving the id's in a list 
-for accession in acc_nos:
-    for result in myfamily[accession]["data"]:
-        ted_list.append(result["ted_id"])
+for accession in tqdm(acc_nos, total=len(acc_nos)):
+    try:
+        for result in myfamily[accession]["data"]:        
+            ted_list.append(result["ted_id"])
+    except KeyError:
+        proteins_without_TED_files.append(accession)
+        continue
 
 # janky as fk method to pause all threads for 1 minute after 100 iterations
 """ a = 0
@@ -63,7 +76,7 @@ n = 13
 o = 14 """
 
 # obtaining and saving the .pdb files of all files called from ted_id's and saving in stated directory
-with ThreadPoolExecutor(max_workers=1) as executor: 
+with ThreadPoolExecutor(max_workers=30) as executor: 
     finals = [executor.submit(obtain, f'https://ted.cathdb.info//api/v1/files/{ted_id}.pdb') for ted_id in ted_list]
 
     for final in tqdm(as_completed(finals), total=len(finals)):
@@ -75,6 +88,10 @@ with ThreadPoolExecutor(max_workers=1) as executor:
         except requests.exceptions.RequestException as e: 
             print(f"Request failed: {e}, variable accessed: {type(final.result())}")
             continue
+
+print(f"The folllowing protein Accession IDs are attributed to proteins that have no information available in the TED database:")
+for prot in proteins_without_TED_files:
+    print(prot)
 
 print("Finished!")
 # requests.exceptions.ConnectTimeout: HTTPSConnectionPool(host='ted.cathdb.info', port=443)

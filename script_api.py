@@ -1,5 +1,6 @@
 # importing packages
 import requests
+from requests.adapters import HTTPAdapter, Retry
 import json
 # progress bar
 from tqdm import tqdm
@@ -35,10 +36,17 @@ m = 12
 n = 13
 o = 14 """
 
+# creating session with way less max_retries so that 443 errors can be detected faster and passed quicker
+s = requests.Session()
+retries = Retry(total=2,
+                backoff_factor=30,
+                status_forcelist=[ 500, 502, 503, 504 ])
+
+s.mount("http://", HTTPAdapter(max_retries= retries))
+
 # defining function to fetch data from threadpool executor
 def fetch(url): 
-    response = requests.get(url) 
-    response.raise_for_status()
+    response = s.get(url)
     return response.json()
 
 # iterating through list of accession numbers and appending to dictionary within multi-threading method
@@ -59,7 +67,7 @@ with ThreadPoolExecutor(max_workers=50) as executor:
                 missed_no = acc_nos[fx.index(future)]
                 addfamily1.append(missed_no)
             continue
-
+""" 
 time.sleep(60)
 
 if len(addfamily1) > 0:
@@ -96,4 +104,6 @@ if len(addfamily2) > 0:
             except new_var as e: 
                 print(f"Request failed: {e}.")
                 port = e[84:86]
-                print(port)
+                print(port) """
+
+print("importing TED_id information for .pdb file requests")
