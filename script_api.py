@@ -39,7 +39,7 @@ o = 14 """
 # creating session with way less max_retries so that 443 errors can be detected faster and passed quicker
 s = requests.Session()
 retries = Retry(total=2,
-                backoff_factor=30,
+                backoff_factor=10,
                 status_forcelist=[ 500, 502, 503, 504 ])
 
 s.mount("http://", HTTPAdapter(max_retries= retries))

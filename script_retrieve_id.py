@@ -2,6 +2,7 @@
 import json
 import os
 import sys
+import tqdm
 
 #state custom file path for json with all protein data for desired database
 file = input("Please state the address of Uniprot-downloaded json file for accession ID extraction: ")
@@ -14,4 +15,4 @@ with open(file) as j:
     json_data = json.load(j)
 
 # retrieve all values attributed to key = "primaryAccession"
-acc_nos = [result["primaryAccession"] for result in json_data["results"]]
+acc_nos = [result["primaryAccession"] for result in tqdm(json_data["results"], total=len(json_data["results"]))]
