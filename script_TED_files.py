@@ -92,6 +92,12 @@ with ThreadPoolExecutor(max_workers=30) as executor:
 print(f"The folllowing protein Accession IDs are attributed to proteins that have no information available in the TED database:")
 for prot in proteins_without_TED_files:
     print(prot)
+    
+# write list of proteins not represented in the TED database to data folder
+file_path_404 = f"{directory}/null_ted_proteins.txt"
+with open(file_path_404, "w") as output:
+    for row in proteins_without_TED_files:
+        output.write(str(row) + "\n")
 
 print("Finished!")
 # requests.exceptions.ConnectTimeout: HTTPSConnectionPool(host='ted.cathdb.info', port=443)

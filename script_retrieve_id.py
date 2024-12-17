@@ -2,7 +2,7 @@
 import json
 import os
 import sys
-import tqdm
+from tqdm import tqdm
 
 #state custom file path for json with all protein data for desired database
 file = input("Please state the address of Uniprot-downloaded json file for accession ID extraction: ")

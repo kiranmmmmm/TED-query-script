@@ -42,7 +42,7 @@ retries = Retry(total=2,
                 backoff_factor=10,
                 status_forcelist=[ 500, 502, 503, 504 ])
 
-s.mount("http://", HTTPAdapter(max_retries= retries))
+s.mount("https://", HTTPAdapter(max_retries= retries))
 
 # defining function to fetch data from threadpool executor
 def fetch(url): 
