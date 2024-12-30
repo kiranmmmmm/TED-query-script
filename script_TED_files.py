@@ -49,6 +49,8 @@ def obtain(url):
 
 proteins_without_TED_files = []
 
+json_metadata = {}
+
 # compiling all TED id's for retrieving the id's in a list 
 for accession in tqdm(acc_nos, total=len(acc_nos)):
     try:
@@ -57,23 +59,6 @@ for accession in tqdm(acc_nos, total=len(acc_nos)):
     except KeyError:
         proteins_without_TED_files.append(accession)
         continue
-
-# janky as fk method to pause all threads for 1 minute after 100 iterations
-""" a = 0
-b = 1
-c = 2
-d = 3
-e = 4
-f = 5
-g = 6
-h = 7
-i = 8
-j = 9
-k = 10
-l = 11
-m = 12
-n = 13
-o = 14 """
 
 # obtaining and saving the .pdb files of all files called from ted_id's and saving in stated directory
 with ThreadPoolExecutor(max_workers=30) as executor: 
@@ -89,9 +74,9 @@ with ThreadPoolExecutor(max_workers=30) as executor:
             print(f"Request failed: {e}, variable accessed: {type(final.result())}")
             continue
 
-print(f"The folllowing protein Accession IDs are attributed to proteins that have no information available in the TED database:")
+""" print(f"The folllowing protein Accession IDs are attributed to proteins that have no information available in the TED database:")
 for prot in proteins_without_TED_files:
-    print(prot)
+    print(prot) """
     
 # write list of proteins not represented in the TED database to data folder
 file_path_404 = f"{directory}/null_ted_proteins.txt"

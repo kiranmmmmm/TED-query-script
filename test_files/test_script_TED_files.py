@@ -10,7 +10,7 @@ from perc import Perc
 
 # test version so I don't borther the API too much :)
 with open('test_family.json') as j:
-    my_family = json.load(j)
+    myfamily = json.load(j)
 
 ted_list = []
 data_dict = {}
@@ -40,7 +40,7 @@ from test_script_retrieve_id import acc_nos
 
 # compiling all TED id's for retrieving the id's in a list 
 for accession in Perc(acc_nos):
-    for result in my_family[accession]["data"]:
+    for result in myfamily[accession]["data"]:
         ted_list.append(result["ted_id"])
 
 # obtaining and saving the .pdb files of all files called from ted_id's and saving in stated directory
